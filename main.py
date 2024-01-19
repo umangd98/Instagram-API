@@ -10,7 +10,7 @@ async def analyze_hashtag(hashtag: str, min_followers: int, engagement_rate: int
         posts = get_hashtag_posts(hashtag_id)
         permalinks = get_permalinks(posts)
         usernames = get_usernames(permalinks)
-        usernames = usernames[:5]
+        usernames = usernames[:2]
         user_infos = get_user_infos(usernames)
         valid_user_infos = check_valid_user_infos(user_infos, min_followers, engagement_rate, average_likes)
         return {"valid_user_infos": valid_user_infos}

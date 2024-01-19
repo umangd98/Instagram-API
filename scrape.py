@@ -1,10 +1,20 @@
 import requests
 from bs4 import BeautifulSoup
 import re
+from dotenv import load_dotenv
+import os
 
-access_token = "EAAM6hJoE9EEBO4eZArrFLc14cb2zw25duZAZBxPOFBhUSAyoI9ZCfBQ3Rggn7PnA0FwItT5WpxBKt1p7JhLsPIuU6X0wPfpVmu2atcABoXCwbZCHsyknMZBF7HhkLAM82IMlOJpV6cbBnuHnmGsZBQrl6q5aAgrZAdP6rQtinnsoShJTZCwAp9g9DBSd31kvp0nikKDTq1Aq8mRBLbJOg7FHlIUBbCIt44YsZD"
 
-user_id = '17841463128846338'
+load_dotenv()
+
+
+# access_token = "EAAM6hJoE9EEBO4eZArrFLc14cb2zw25duZAZBxPOFBhUSAyoI9ZCfBQ3Rggn7PnA0FwItT5WpxBKt1p7JhLsPIuU6X0wPfpVmu2atcABoXCwbZCHsyknMZBF7HhkLAM82IMlOJpV6cbBnuHnmGsZBQrl6q5aAgrZAdP6rQtinnsoShJTZCwAp9g9DBSd31kvp0nikKDTq1Aq8mRBLbJOg7FHlIUBbCIt44YsZD"
+
+access_token = os.environ['ACCESS_TOKEN']
+user_id = os.environ['USER_ID']
+
+
+# user_id = '17841463128846338'
 
 def get_instagram_username(url):
     try:
