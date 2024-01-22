@@ -44,6 +44,7 @@ def get_hashtag_id(hashtag):
     try:
         response = requests.get('https://graph.facebook.com/v18.0/ig_hashtag_search?q=' + hashtag + '&user_id=' + user_id + '&access_token=' + access_token)
         if response.status_code == 200:
+            print('hashtag ID --> ', response.json()['data'][0]['id'])
             return response.json()['data'][0]['id']
         else:
             return f"Failed to access the page, status code get_hashtag_id: {response.status_code}"
@@ -59,6 +60,8 @@ def get_hashtag_posts(hashtag_id):
     try:
         response = requests.get('https://graph.facebook.com/v18.0/' + hashtag_id + '/top_media?user_id=' + user_id + '&fields=id%2Cmedia_type%2Ccomments_count%2Clike_count%2Cpermalink&access_token=' + access_token)
         if response.status_code == 200:
+            #log the response
+            print('hashtag posts --> ',response.json()['data'])
             return response.json()['data']
         else:
             return f"Failed to access the page, status code get_hashtag_posts: {response.status_code}"
@@ -69,12 +72,16 @@ def get_permalinks(posts):
     permalinks = []
     for post in posts:
         permalinks.append(post['permalink'])
+    #log the permalinks
+    print('permalinks --> ',permalinks)
     return permalinks
 
 def get_usernames(permalinks):
     usernames = []
     for permalink in permalinks:
         usernames.append(get_instagram_username(permalink))
+    #log the usernames
+    print('usernames --> ',usernames)
     return usernames
 
 
@@ -92,6 +99,8 @@ def get_user_info(username):
     try:
         response = requests.get('https://graph.facebook.com/v18.0/' + user_id + '?fields=business_discovery.username(' + username + ')%7Bfollowers_count%2Cmedia_count%2Cmedia%7Bcomments_count%2Clike_count%7D%7D&access_token=' + access_token)
         if response.status_code == 200:
+            #log the response
+            print('user info --> ',response.json()['business_discovery'])
             return response.json()['business_discovery']
         else:
             return f"Failed to access the page, status code get_user_info: {response.status_code}"
@@ -123,15 +132,17 @@ def get_user_infos(usernames):
         if fetched_user_info and isinstance(fetched_user_info, dict):
             fetched_user_info['username'] = username
             user_infos.append(fetched_user_info)
+    #log the user_infos
+    print('user_infos  --> ',user_infos)
     return user_infos
 
-def check_valid_user_infos(user_infos, min_followers: int =1000, engagement_rate: int = 5, average_likes: int = 100):
+def check_valid_user_infos(user_infos, min_followers: int =1000, max_followers: int = 10000, engagement_rate: int = 5, average_likes: int = 100):
     valid_user_infos = []
     for user_info in user_infos:
         follower_count = user_info['followers_count']
         avg_likes = calculate_average_likes(user_info['media']['data'])
         engagement_rate = calculate_engagement_rate(user_info['media']['data'], follower_count)
-        if user_info['followers_count'] > min_followers and avg_likes > average_likes and engagement_rate > engagement_rate/100:
+        if user_info['followers_count'] > min_followers and user_info['followers_count'] < max_followers and avg_likes > average_likes and engagement_rate > engagement_rate/100:
             print('follower_count --> ',follower_count)
             print('avg_likes --> ',avg_likes)
             print('engagement_rate --> ',engagement_rate)
