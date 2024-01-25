@@ -121,7 +121,7 @@ def calculate_engagement_rate(posts, follower_count):
     if follower_count == 0:
         return 0
     else:
-        return total_interactions / follower_count
+        return total_interactions / (follower_count * len(posts))
 
 
 def get_user_infos(usernames):
